@@ -7,10 +7,9 @@
 #include "CoreMinimal.h"
 #include "CesiumWebMapTileServiceRasterOverlay.generated.h"
 
+
 /**
- * A raster overlay that directly accesses a Tile Map Service (TMS) server. If
- * you're using Bing Maps via Cesium ion, use the "Cesium ion Raster Overlay"
- * component instead.
+ * A raster overlay that directly accesses a Web Map Tile Service (WMTS) server.
  */
 UCLASS(ClassGroup = (Cesium), meta = (BlueprintSpawnableComponent))
 class CESIUMRUNTIME_API UCesiumWebMapTileServiceRasterOverlay
@@ -19,25 +18,64 @@ class CESIUMRUNTIME_API UCesiumWebMapTileServiceRasterOverlay
 
 public:
   /**
-   * The base URL of the Tile Map Service (TMS).
+   * The base URL of the Web Map Tile Service (WMTS).
    */
   UPROPERTY(EditAnywhere, Category = "Cesium")
   FString Url;
 
   /**
-   * The base URL of the Tile Map Service (TMS).
+   * True to use a URL template.
+   */
+  UPROPERTY(EditAnywhere, Category = "Cesium")
+  bool bUseUrlTemplate = false;
+
+  /**
+   * The URL template of the Web Map Tile Service (WMTS).
+   */
+  UPROPERTY(
+      EditAnywhere,
+      Category = "Cesium",
+      meta = (EditCondition = "bUseUrlTemplate"))
+  FString UrlTemplate = "";
+
+  /**
+   * True to use a key-value token for the WMTS request.
+   */
+  UPROPERTY(EditAnywhere, Category = "Cesium")
+  bool bNeedKey = false;
+
+  /**
+   * The keyname of the token.
+   */
+  UPROPERTY(
+      EditAnywhere,
+      Category = "Cesium",
+      meta = (EditCondition = "bNeedKey"))
+  FString KeyName = "";
+
+  /**
+   * The value of the token.
+   */
+  UPROPERTY(
+      EditAnywhere,
+      Category = "Cesium",
+      meta = (EditCondition = "bNeedKey"))
+  FString KeyValue = "";
+
+  /**
+   * The layer name for WMTS requests.
    */
   UPROPERTY(EditAnywhere, Category = "Cesium")
   FString Layer;
 
   /**
-   * The base URL of the Tile Map Service (TMS).
+   * The identifier of the TileMatrixSet to use for WMTS requests.
    */
   UPROPERTY(EditAnywhere, Category = "Cesium")
   FString TileMatrixSetID;
 
   /**
-   * The base URL of the Tile Map Service (TMS).
+   * The style name for WMTS requests.
    */
   UPROPERTY(EditAnywhere, Category = "Cesium")
   FString Style = "default";
@@ -67,6 +105,20 @@ public:
       Category = "Cesium",
       meta = (EditCondition = "bSpecifyZoomLevels"))
   int32 MaximumLevel = 10;
+
+  /**
+   * The subdomains to use for the {s} or {subdomain} placeholder in the URL
+   * template.
+   */
+  UPROPERTY(EditAnywhere, Category = "Cesium")
+  FString SubDomain;
+
+  /**
+   * A list of identifiers in the TileMatrix to use for WMTS requests, one per
+   * TileMatrix level.
+   */
+  UPROPERTY(EditAnywhere, Category = "Cesium")
+  FString TileMatrixLabels;
 
 protected:
   virtual std::unique_ptr<Cesium3DTilesSelection::RasterOverlay>
